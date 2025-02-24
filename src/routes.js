@@ -1,22 +1,38 @@
-import { createBrowserRouter } from "react-router-dom";
+import React from "react";
+import { createBrowserRouter, redirect, Outlet } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Users from "./pages/Users";
-import UserEdit, { userLoader } from "./pages/UserEdit";
+import Home from "./pages/home";
+import UserList from "./pages/user-list";
+import UserEdit from "./pages/user-edit";
+import SignIn from "./pages/sign-in";
+import UserCreate from "./pages/user-create";
+
+const checkAuth = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return redirect("/login");
+  }
+  return null;
+};
+
+function ProtectedLayout() {
+  return <Outlet />;
+}
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
+    path: "/login",
+    element: <SignIn />,
   },
   {
-    path: "/users",
-    element: <Users />,
-  },
-  {
-    path: "/users/:userId",
-    element: <UserEdit />,
-    loader: userLoader,
+    element: <ProtectedLayout />,
+    loader: checkAuth,
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/users", element: <UserList /> },
+      { path: "/users/create", element: <UserCreate /> },
+      { path: "/users/:userId", element: <UserEdit /> },
+    ],
   },
 ]);
 
