@@ -8,7 +8,7 @@ export default class UserService {
     return response.data;
   }
 
-  static async get({ id }) {
+  static async get(id) {
     const response = await api.get(`${baseUrl}/users/${id}`);
     return response.data;
   }
@@ -18,7 +18,7 @@ export default class UserService {
     return response.data;
   }
 
-  static async update({ id, data }) {
+  static async update(id, data) {
     const response = await api.put(`${baseUrl}/users/${id}`, data);
     return response.data;
   }
