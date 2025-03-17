@@ -1,46 +1,72 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import useSWR from "swr";
-import UserService from "../services/user.service";
-
-const fetcher = () => UserService.list();
+import { useUsersList } from "hooks";
+import "../styles/users-list.css";
 
 export default function UsersList() {
-  const { data: users, error, mutate } = useSWR("/users", fetcher);
-  const [deleteError, setDeleteError] = useState("");
+  const { users, error, deleteError, isLoading, handleDelete } = useUsersList();
 
-  const handleDelete = async (id) => {
-    try {
-      await UserService.delete(id);
-      setDeleteError("");
-      mutate(
-        users.filter((user) => user.id !== id),
-        false,
-      );
-    } catch (err) {
-      setDeleteError("Erro ao excluir usuário.");
-    }
-  };
+  if (error)
+    return (
+      <div className="error-container">
+        Erro ao carregar usuários. Verifique sua conexão e tente novamente.
+      </div>
+    );
+  if (!users)
+    return <div className="loading-container">Carregando usuários...</div>;
 
-  if (error) return <div>Erro ao carregar usuários.</div>;
-  if (!users) return <div>Carregando...</div>;
+  if (users.length === 0) {
+    return (
+      <div className="empty-list">
+        Nenhum usuário encontrado. Adicione um novo usuário para começar.
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Usuários</h2>
-      {deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
-      <Link to="/users/create">Cadastrar novo usuário</Link>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email}{" "}
-            <Link to={`/users/${user.id}`}>Editar</Link>
-            <button type="button" onClick={() => handleDelete(user.id)}>
-              Excluir
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="users-container">
+      {deleteError && <div className="error-container">{deleteError}</div>}
+
+      <table className="users-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td data-label="Nome">
+                <span className="user-name">{user.name}</span>
+              </td>
+              <td data-label="Email">
+                <span className="user-email">{user.email}</span>
+              </td>
+              <td data-label="Tipo">
+                <span className="user-type">{user.type}</span>
+              </td>
+              <td data-label="Ações">
+                <div className="action-buttons">
+                  <Link to={`/users/${user.id}`} className="edit-button">
+                    Editar
+                  </Link>
+                  <button
+                    type="button"
+                    className="delete-button"
+                    onClick={() => handleDelete(user.id)}
+                    disabled={isLoading}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
