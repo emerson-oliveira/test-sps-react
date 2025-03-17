@@ -57,7 +57,16 @@
         "case": "kebabCase"
       }
     ],
-    "react/no-unused-prop-types": "off"
+    "react/no-unused-prop-types": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "controlComponents": [
+          "Controller"
+        ],
+        "depth": 3
+      }
+    ]
   },
   "settings": {
     "import/resolver": {
