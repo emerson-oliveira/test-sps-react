@@ -1,13 +1,21 @@
 import React from "react";
-import UsersList from "../components/users-list";
-import Footer from "../components/footer";
+import { Link } from "react-router-dom";
+import { UsersList, Footer } from "components";
+import "styles/user-list.css";
 
-export default function Page() {
+function UserListPage() {
   return (
-    <div>
-      <h1>Gerenciamento de Usuários</h1>
+    <div className="user-list-container">
+      <div className="user-list-header">
+        <h1>Gerenciamento de Usuários</h1>
+        <Link to="/users/create" className="add-user-button">
+          + Adicionar Usuário
+        </Link>
+      </div>
       <UsersList />
       <Footer />
     </div>
   );
 }
+
+export default UserListPage;

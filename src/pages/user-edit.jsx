@@ -1,13 +1,13 @@
 import React from "react";
-import UserForm from "../components/user-form";
-import Footer from "../components/footer";
+import { UserForm, Footer } from "components";
 
-export default function Page() {
+function UserEditPage() {
   return (
     <div>
-      <h2>Editar Usuário</h2>
       <UserForm />
       <Footer />
     </div>
   );
 }
+
+export default UserEditPage;
